@@ -39,16 +39,25 @@ const classroom = [];
 app.get("/students", async (req, res) => {
   const data = await connection.raw("SELECT * FROM classroom");
   const classRoomList = data[0];
+
+  return { id: v.id, name: v.classroom_name, year: v.classroom_year };
 });
 
 //get all class room
 app.get("/classrooms", async (req, res) => {
-  const data = await connection.raw("SELECT * FROM classroom");
+  const data = await connection.raw(
+    "SELECT classroom.*, COUNT(student.id) AS total_student FROM classroom INNER JOIN student ON classroom.id = student.classroom_id GROUP BY classroom.id"
+  );
   const classRoomList = data[0];
 
   return res.json(
     classRoomList.map(function (v) {
-      return { id: v.id, name: v.classroom_name, year: v.classroom_year };
+      return {
+        id: v.id,
+        name: v.classroom_name,
+        year: v.classroom_year,
+        total_student: v.total_student,
+      };
     })
   );
 });
@@ -103,6 +112,16 @@ app.post("/classroom/:id", async (req, res) => {
     }
   );
 });
+app.post("/allclassroom/:id", async (req, res) => {
+  await connection.raw(
+    "UPDATE classroom SET classroom_name = :name, classroom_year = :year WHERE id = :id",
+    {
+      name: req.body.name,
+      year: req.body.year,
+      id: req.params.id,
+    }
+  );
+});
 // Delete student
 app.delete("/student/:id", async (req, res) => {
   await connection.raw("DELETE FROM student WHERE id = :id", {
@@ -111,9 +130,12 @@ app.delete("/student/:id", async (req, res) => {
 });
 
 app.delete("/classroom/:id", async (req, res) => {
-  await connection.raw("DELETE FROM classroom WHERE id = :id", {
-    id: req.params.id,
-  });
+  await connection.raw(
+    "DELETE classroom,student FROM classroom INNER JOIN student ON classroom.id = student.classroom_id WHERE classroom.id = :id",
+    {
+      id: req.params.id,
+    }
+  );
   console.log("Deleted Row sucessfully");
 
   res.json({ success: true });
@@ -128,3 +150,11 @@ app.listen(port, () => console.log("listening on port" + port));
 // Next Step
 // - Work with database
 // - Add student to classroom
+
+// year
+// name
+
+// id
+// year
+// name
+// student_coount (INNER JOIN, GROUP BY)
