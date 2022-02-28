@@ -112,21 +112,13 @@ app.post("/classroom/:id", async (req, res) => {
     }
   );
 });
-app.post("/allclassroom/:id", async (req, res) => {
-  await connection.raw(
-    "UPDATE classroom SET classroom_name = :name, classroom_year = :year WHERE id = :id",
-    {
-      name: req.body.name,
-      year: req.body.year,
-      id: req.params.id,
-    }
-  );
-});
+
 // Delete student
 app.delete("/student/:id", async (req, res) => {
   await connection.raw("DELETE FROM student WHERE id = :id", {
     id: req.params.id,
   });
+  res.json({ success: true });
 });
 
 app.delete("/classroom/:id", async (req, res) => {
