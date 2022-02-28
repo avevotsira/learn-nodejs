@@ -13,7 +13,7 @@ const app = express();
 // Give ability to read JSON body
 app.use(express.json());
 
-const port = 3010;
+const PORT = process.env.PORT || 3010;
 const students = [];
 const classroom = [];
 
@@ -141,7 +141,7 @@ app.delete("/classroom/:id", async (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(port, () => console.log("listening on port" + port));
+app.listen(PORT, () => console.log("listening on port" + PORT));
 
 // Homework
 // - Add/remove classroom
