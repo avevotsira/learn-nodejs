@@ -10,30 +10,13 @@ const connection = require("knex")({
 });
 const app = express();
 
-// Give ability to read JSON body
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 3010;
 const students = [];
 const classroom = [];
 
-// - Get some parameter
-//    - Parameters
-//    - JSON Body
-// - Understand METHOD meaning
-//    - GET
-//    - POST
-//    - DELETE
-// app.get('/hello/:id', (req, res) => {
-//     return res.json({
-//         message: "This is hello world " + req.params.id
-//     })
-// })
-
-// Map Function
-// a.map(x => { return ... });
-// Spreading Operation
-// {...a, gender: 'Male'}
 
 // Get all student
 app.get("/students", async (req, res) => {
@@ -82,14 +65,7 @@ app.post("/classroom", async (req, res) => {
 });
 //Delete
 app.post("/classroom/:id", async (req, res) => {
-  // await connection.raw(
-  //     "UPDATE classroom SET classroom_name = :name, classroom_year = :year WHERE id = :id",
-  //     {
-  //         name: req.body.name,
-  //         year: req.body.year,
-  //         id: req.params.id,
-  //     }
-  // );
+ 
 
   await connection
     .table("classroom")
@@ -150,3 +126,30 @@ app.listen(PORT, () => console.log("listening on port" + PORT));
 // year
 // name
 // student_coount (INNER JOIN, GROUP BY)
+// Give ability to read JSON body
+// - Get some parameter
+//    - Parameters
+//    - JSON Body
+// - Understand METHOD meaning
+//    - GET
+//    - POST
+//    - DELETE
+// app.get('/hello/:id', (req, res) => {
+//     return res.json({
+//         message: "This is hello world " + req.params.id
+//     })
+// })
+
+// Map Function
+// a.map(x => { return ... });
+// Spreading Operation
+// {...a, gender: 'Male'}
+//Code for Update using Knex OTM
+ // await connection.raw(
+  //     "UPDATE classroom SET classroom_name = :name, classroom_year = :year WHERE id = :id",
+  //     {
+  //         name: req.body.name,
+  //         year: req.body.year,
+  //         id: req.params.id,
+  //     }
+  // );
